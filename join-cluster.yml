@@ -25,4 +25,5 @@
       copy:
         dest: "/home/core/.kube/config"
         content: "{{ conf_file.stdout }}"
+    - import_tasks: tasks/install-bash-completation.yml
 

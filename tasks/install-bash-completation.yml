@@ -1,0 +1,23 @@
+- name: Copy bash_completation
+  copy:
+    src: ./files/bash_completion
+    dest: /opt/bash_completion
+    mode: 0644
+    owner: "root"
+    group: "root"
+- name: Remove .bashrc
+  file:
+    path: /home/core/.bashrc
+    follow: false
+    state: absent
+- name: Create new .bashrc
+  copy:
+    owner: "core"
+    group: "core"
+    dest: /home/core/.bashrc
+    content: |
+      source /usr/share/skel/.bashrc
+      source /opt/bash_completion
+      source <(kubectl completion bash)
+      alias k=kubectl
+      complete -F __start_kubectl k

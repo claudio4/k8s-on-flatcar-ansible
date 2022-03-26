@@ -53,3 +53,4 @@
       delay: 30
       register: result
       until: result.rc == 0
+    - import_tasks: tasks/install-bash-completation.yml
