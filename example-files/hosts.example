@@ -1,0 +1,7 @@
+[masters]
+flatcar1 ansible_host=xxx.xxx.xxx.1
+
+
+[minions]
+flatcar2 ansible_host=xxx.xxx.xxx.2 
+flatcar3 ansible_host=xxx.xxx.xxx.3 

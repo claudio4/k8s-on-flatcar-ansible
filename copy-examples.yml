@@ -1,0 +1,14 @@
+- name: Copy example files
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Copy hosts file
+      copy:
+        src: ./example-files/hosts.example
+        dest: ./hosts
+        force: no
+    - name: Copy join vars file
+      copy:
+        src: ./example-files/join.example.yml
+        dest: ./group_vars/minions/join.yml
+        force: no

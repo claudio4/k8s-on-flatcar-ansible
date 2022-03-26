@@ -1,0 +1,4 @@
+apiServerEndpoint: ""
+joinToken: ""
+caCertHashes:
+  - ""
