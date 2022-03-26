@@ -7,7 +7,7 @@
           - name: check for installed python
             raw: "[ -f /home/core/.opt/pypy/bin/python ] && echo 'installed' || echo 'missing'"
             register: py_check
-          - meta: end_play
+          - meta: end_host
             when: py_check.stdout_lines[0] == "installed"
     - name: create opt
       raw: "mkdir -p /home/core/.opt"

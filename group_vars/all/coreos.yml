@@ -1,5 +1,4 @@
 ansible_ssh_user: core
 ansible_python_interpreter: "/home/core/.opt/pypy/bin/python"
-
 python_version: '3.9'
 pypy_version: '7.3.8'

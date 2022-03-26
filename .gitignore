@@ -1,0 +1,10 @@
+# Ansible setup dependant files
+/hosts
+/group_vars/minions/join.yml
+
+# Artifacts
+ignition.json
+
+#IDE files
+.vscode
+.idea
