@@ -1,7 +1,7 @@
 passwd:
   users:
     - name: core
-      ssh_authorized_keys: "{{ ssh_keys }}"
+      ssh_authorized_keys: {{ ssh_keys }}
 storage:
   files:
     - path: /etc/modules-load.d/bridge-netfilter.conf

@@ -9,3 +9,20 @@
         dest: /home/core/kubeadm-join.yml
     - name: Join cluster
       command: kubeadm join --config /home/core/kubeadm-join.yml
+      register: join
+    - debug:
+        var: join.stdout_lines
+    - name: Create kubectl config directory
+      file:
+        path: "/home/core/.kube"
+        state: directory
+    - name: Get kubectl config
+      command: cat /home/core/.kube/config
+      delegate_to: "{{groups['masters'][0]}}"
+      register: conf_file
+      # run_once: yes
+    - name: Write kubectl config
+      copy:
+        dest: "/home/core/.kube/config"
+        content: "{{ conf_file.stdout }}"
+

@@ -1,0 +1,55 @@
+- hosts: masters
+  become: yes
+
+  tasks:
+    - import_tasks: tasks/install-kubeadm.yml
+    - name: Copy config
+      copy:
+        src: ./files/kubeadm-init.yml
+        dest: /home/core/kubeadm-init.yml
+    - name: Init cluster
+      command: kubeadm init --config /home/core/kubeadm-init.yml
+      register: init
+    - debug:
+        var: init.stdout_lines
+    - name: Rollback
+      when: init.rc != 0
+      block:
+        - pause:
+            prompt: "DANGEROUS: Installation failed, do you wish to reset the cluster? (yes/no)"
+            echo: true
+          register: reset
+        - name: Reset cluster
+          command: kubeadm reset cleanup-node --cri-socket /run/containerd/containerd.sock
+          when: reset.user_input | bool
+        - meta: end_host
+          when: reset.user_input | bool
+    - name: Create kubectl config directory
+      file:
+        path: "/home/core/.kube"
+        state: directory
+    - name: Copy kubectl config
+      copy:
+        remote_src: yes
+        src: "/etc/kubernetes/admin.conf"
+        dest: "/home/core/.kube/config"
+        owner: "core"
+        group: "core"
+        mode: 0755
+    - name: Get calico manifest
+      get_url:
+        url: "https://docs.projectcalico.org/manifests/calico.yaml"
+        dest: /home/core/calico.yaml
+    - name: Adjust calico manifest
+      replace:
+        path: /home/core/calico.yaml
+        regexp: "\/usr\/libexec"
+        replace : "/opt/libexec"
+        owner: "core"
+        group: "core"
+    - name: Install calico
+      command: kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f /home/core/calico.yaml
+      retries: 5
+      delay: 30
+      register: result
+      until: result.rc == 0
