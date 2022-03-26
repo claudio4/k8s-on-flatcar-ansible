@@ -1,0 +1,32 @@
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys: "{{ ssh_keys }}"
+storage:
+  files:
+    - path: /etc/modules-load.d/bridge-netfilter.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: br_netfilter
+    - path: /etc/sysctl.d/nf.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+                  net.bridge.bridge-nf-call-ip6tables = 1
+                  net.bridge.bridge-nf-call-iptables = 1
+    - filesystem: "root"
+      path:       "/etc/hostname"
+      mode:       0644
+      contents:
+        inline: {{ hostname.user_input }}
+    - filesystem: "root"
+      path:       "/etc/hosts"
+      mode:       0644
+      contents:
+        inline: |
+          127.0.0.1 localhost
+          ::1       localhost
+          127.0.0.1 {{ hostname.user_input }}
+          ::1       {{ hostname.user_input }}

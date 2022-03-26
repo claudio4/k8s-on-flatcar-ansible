@@ -1,9 +1,11 @@
 # Ansible setup dependant files
 /hosts
 /group_vars/minions/join.yml
+/host_vars/localhost/container-linux-conf.yml
 
 # Artifacts
 ignition.json
+/core-config
 
 #IDE files
 .vscode

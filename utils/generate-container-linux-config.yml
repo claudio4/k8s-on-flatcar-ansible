@@ -1,0 +1,16 @@
+- name: Generate container linux config
+  hosts: localhost
+  connection: local
+  tasks:
+    - pause:
+        prompt: "Enter your desired hostname"
+        echo: yes
+      register: hostname
+    - name: Create core-config directory
+      file:
+        path: ../core-config
+        state: directory
+    - template:
+        src: ../files/core-config.yml
+        dest: ../core-config/{{hostname.user_input}}.yml
+

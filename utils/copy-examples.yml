@@ -1,0 +1,27 @@
+- name: Copy example files
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Copy hosts file
+      copy:
+        src: ../example-files/hosts.example
+        dest: ../hosts
+        force: no
+    - name: Create group_vars/minions folder
+      file:
+        path: ../group_vars/minions
+        state: directory
+    - name: Copy join vars file
+      copy:
+        src: ../example-files/join.example.yml
+        dest: ../group_vars/minions/join.yml
+        force: no
+    - name: Create host_vars/localhost folder
+      file:
+        path: ../host_vars/localhost
+        state: directory
+    - name: Copy container linux conf vars
+      copy:
+        src: ../example-files/container-linux-conf.example.yml
+        dest: ../host_vars/localhost/container-linux-conf.yml
+        force: no
