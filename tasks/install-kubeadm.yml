@@ -1,0 +1,71 @@
+- name: Create /opt/bin
+  file:
+    path: "/opt/bin"
+    state: directory
+- name: Create /opt/cni/bin
+  file:
+    path: "/opt/cni/bin"
+    state: directory
+- name: Install CNI
+  unarchive:
+    creates: /opt/cni/bin/loopback
+    dest: /opt/cni/bin
+    remote_src: yes
+    src: "https://github.com/containernetworking/plugins/releases/download/{{CNI_VERSION}}/cni-plugins-linux-{{KUBE_ARCH}}-{{CNI_VERSION}}.tgz"
+- name: Install crictl 
+  unarchive:
+    creates: /opt/bin/crictl
+    dest: /opt/bin
+    remote_src: yes
+    src: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{CRICTL_VERSION}}/crictl-{{CRICTL_VERSION}}-linux-{{KUBE_ARCH}}.tar.gz"
+- name: Install kubeadm
+  get_url:
+    url: "https://storage.googleapis.com/kubernetes-release/release/{{KUBE_RELEASE}}/bin/linux/{{KUBE_ARCH}}/kubeadm"
+    dest: /opt/bin/kubeadm
+- name: Install kubelet
+  get_url:
+    url: "https://storage.googleapis.com/kubernetes-release/release/{{KUBE_RELEASE}}/bin/linux/{{KUBE_ARCH}}/kubelet"
+    dest: /opt/bin/kubelet
+- name: Install kubectl
+  get_url:
+    url: "https://storage.googleapis.com/kubernetes-release/release/{{KUBE_RELEASE}}/bin/linux/{{KUBE_ARCH}}/kubectl"
+    dest: /opt/bin/kubectl
+- name: Set permissions of kubeadm
+  file:
+    path: "/opt/bin/kubeadm"
+    mode: '0755'
+- name: Set permissions of kubelet
+  file:
+    path: "/opt/bin/kubelet"
+    mode: '0755'
+- name: Set permissions of kubectl
+  file:
+    path: "/opt/bin/kubectl"
+    mode: '0755'
+- name: Add kubelet service
+  copy:
+    src: ./files/kubelet.service
+    dest: /etc/systemd/system/kubelet.service
+- name: Reloading systemd
+  systemd:
+    daemon_reload: yes
+- name: Disable docker socket
+  systemd:
+    name: docker.socket
+    enabled: no
+    state: stopped
+- name: Disable docker daemon
+  systemd:
+    name: docker.service
+    enabled: no
+    state: stopped
+- name: Enable and start containerd
+  systemd:
+    name: containerd
+    enabled: yes
+    state: started
+- name: Enable and start kubelet daemon
+  systemd:
+    name: kubelet
+    enabled: yes
+    state: started

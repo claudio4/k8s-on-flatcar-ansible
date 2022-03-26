@@ -1,0 +1,11 @@
+- hosts: minions
+  become: yes
+
+  tasks:
+    - import_tasks: tasks/install-kubeadm.yml
+    - name: Copy config
+      template:
+        src: ./files/kubeadm-join.yml
+        dest: /home/core/kubeadm-join.yml
+    - name: Join cluster
+      command: kubeadm join --config /home/core/kubeadm-join.yml

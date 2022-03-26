@@ -1,0 +1,15 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: JoinConfiguration
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: {{ apiServerEndpoint }}
+    token: {{ joinToken }}
+    caCertHashes: {{ caCertHashes }}
+nodeRegistration:
+  criSocket: /run/containerd/containerd.sock
+  kubeletExtraArgs:
+    volume-plugin-dir: "/opt/libexec/kubernetes/kubelet-plugins/volume/exec/"
+---
+kind: KubeletConfiguration
+apiVersion: kubelet.config.k8s.io/v1beta1
+cgroupDriver: systemd
